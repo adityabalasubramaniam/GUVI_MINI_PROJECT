@@ -1,109 +1,153 @@
+
 # Census Data Standardization and Analysis Pipeline
 
-## Technologies used:
-- Python,
-- SQL,
-- MongoDB,
-- Streamlit
+This project provides a comprehensive pipeline for cleaning, processing, and analyzing census data, focusing on standardizing data for accurate insights and enabling data visualization.
 
-# Project Workflow and Execution for Census Data Pipeline
+## Technologies Used
+- **Python**: Data processing, cleaning, and transformation
+- **SQL**: Relational database for storing and querying data
+- **MongoDB**: NoSQL database for initial data storage
+- **Streamlit**: Dashboard for data visualization
 
-# Phase 1: Initial Setup and Data Extraction
+---
 
-## Set Up the Environment
+## Project Workflow and Execution
 
-### Install Required Libraries:
-- Make sure libraries like pandas, sqlalchemy, pymongo, streamlit, os and numpy are installed.
-### Configure Database Connections:
-- Set up MongoDB and SQL database connections using MongoDB URI and SQLAlchemy connection strings.
+### Phase 1: Initial Setup and Data Extraction
+
+1. **Set Up the Environment**
+   - **Install Required Libraries**:
+     Ensure the following libraries are installed: `pandas`, `sqlalchemy`, `pymongo`, `streamlit`, `os`, and `numpy`.
+   - **Configure Database Connections**:
+     Set up connections to both MongoDB and an SQL database using MongoDB URI and SQLAlchemy connection strings.
+
+2. **Extract Data**
+   - **Load Dataset**: Download or connect to the dataset URL and load it into a Pandas DataFrame.
+   - **Load Additional Files**:
+     Load auxiliary files such as Telangana district list (`Telangana.txt`) and any other mappings or required external data.
+
+---
+
+### Phase 2: Data Cleaning and Transformation
+
+#### Task 1: Rename Column Names
+- **Execution**:
+  - Create a dictionary mapping old column names to new names (e.g., `{"State name": "State/UT", ...}`).
+  - Use Pandas `rename()` function to update column names in the DataFrame.
+- **Validation**:
+  - Print column names to confirm that the renaming was successful.
+
+#### Task 2: Standardize State/UT Names
+- **Execution**:
+  - Apply a function to format State/UT names with title casing, ensuring words like “and” remain lowercase.
+- **Validation**:
+  - Check unique values in the State/UT column to verify correct formatting.
+
+#### Task 3: New State/UT Formation
+- **Execution**:
+  - Load Telangana districts from `Telangana.txt` and update the State/UT from "Andhra Pradesh" to "Telangana" for matching districts.
+  - Change "Leh" and "Kargil" districts from "Jammu and Kashmir" to "Ladakh".
+- **Validation**:
+  - List affected districts to confirm the correct State/UT assignments.
+
+---
+
+### Phase 3: Handle Missing Data
+
+#### Task 4: Calculate and Fill Missing Data
+- **Execution**:
+  - Calculate missing data percentages for each column.
+  - Fill missing data based on relationships, e.g., `Population = Male + Female`.
+  - Log and compare missing data before and after filling.
+- **Validation**:
+  - Print a summary of missing data before and after filling to verify completeness.
+
+---
+
+### Phase 4: Data Storage in MongoDB
+
+#### Task 5: Save Processed Data to MongoDB
+- **Execution**:
+  - Convert the DataFrame to a dictionary format and insert it into MongoDB in a collection named `census`.
+- **Validation**:
+  - Query MongoDB to confirm successful data insertion and correct structure.
+
+---
+
+### Phase 5: Data Migration to SQL Database
+
+#### Task 6: Load Data from MongoDB to SQL Database
+- **Execution**:
+  - Retrieve data from MongoDB and insert it into SQL database tables, with table names matching the file names (excluding extensions).
+  - Define primary and foreign keys according to the data schema.
+- **Validation**:
+  - Verify SQL tables by running queries to ensure data integrity and relationships.
+
+---
+
+### Phase 6: Data Analysis and Visualization with Streamlit
+
+#### Task 7: Query and Display Data in Streamlit
+- **Execution**:
+  - **Write SQL Queries**: Define queries for each analysis, such as total population per district, literacy rates, and household characteristics.
+  - **Implement Streamlit Dashboard**:
+    - Create an interactive dashboard with separate sections/tabs for each query.
+    - Use tables, charts, and other visuals to display query results.
+- **Validation**:
+  - Test each query in Streamlit to ensure correct data display and clear visualizations.
+
+---
+
+### Final Output
+The final output is displayed in a local Streamlit application running on `localhost`, as shown in the image below
 
 
-## Extract Data
+---
 
-Load Dataset: Download or connect to the dataset URL, read it into a Pandas DataFrame.
-Load Additional Files:
-Telangana district list (Telangana.txt), if not provided within the main dataset.
-Any other auxiliary files needed for tasks (e.g., mappings or external data).
+## Cloning and Running the Project
 
+### Clone the Project Repository
 
-# Phase 2: Data Cleaning and Transformation
-Task 1: Rename Column Names
+1. **Copy the Repository URL**:
+   - Click the **Code** button in the repository on GitHub, and copy the HTTP URL.
 
-Execution:
-Create a dictionary of old column names and their respective new names (e.g., {"State name": "State/UT", ...}).
-Use Pandas rename function to rename columns in the DataFrame.
-Validation:
-Print column names to confirm that renaming has been applied correctly.
-Task 2: Standardize State/UT Names
+2. **Open the Command Line**:
+   - Open the command line by pressing `Win + R`, typing `cmd`, and pressing **Enter**.
 
-Execution:
-Apply a function to capitalize only the first letter of each word in State/UT names, with exceptions for words like “and”.
-Validation:
-Check unique values in the State/UT column to confirm proper formatting.
-Task 3: New State/UT Formation
+3. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   ```
+   - This will create a local copy of the repository in a folder with the repository name.
 
-Execution:
-Load Telangana districts from Telangana.txt and update State/UT from “Andhra Pradesh” to “Telangana” for matching districts.
-Change districts “Leh” and “Kargil” from “Jammu and Kashmir” to “Ladakh”.
-Validation:
-Verify by listing affected districts and confirming the correct State/UT names.
+4. **Navigate into the Project Folder**:
+   ```bash
+   cd <repository-name>
+   ```
 
-# Phase 3: Handle Missing Data
-Task 4: Calculate and Fill Missing Data
-Execution:
-Calculate missing data percentages for each column and store these metrics.
-Fill missing data based on given relationships (e.g., Population = Male + Female).
-Log and compare the amount of missing data before and after filling.
-Validation:
-Print summary of missing data before and after filling to confirm improvements in data completeness.
+5. **Open in VS Code**:
+   - To open the project in Visual Studio Code, run:
+     ```bash
+     code .
+     ```
 
-# Phase 4: Data Storage in MongoDB
-Task 5: Save Processed Data to MongoDB
-Execution:
-Convert the DataFrame to a dictionary and insert it into MongoDB with a collection named census.
-Validation:
-Confirm data insertion by querying MongoDB and ensuring the data structure is correct.
+---
 
-# Phase 5: Data Migration to SQL Database
-Task 6: Load Data from MongoDB to SQL Database
-Execution:
-Retrieve data from MongoDB and load it into a SQL database table, with each table name corresponding to the filename without the extension.
-Define primary and foreign keys based on data schema requirements.
-Validation:
-Verify SQL tables by running simple queries to ensure data integrity and relationships are set up correctly.
+### Run the Code
 
-# Phase 6: Data Analysis and Visualization with Streamlit
-Task 7: Query and Display Data in Streamlit
-Execution:
-Write SQL Queries: Define queries for each analysis task (e.g., total population per district, literate males/females, household characteristics).
-Implement Streamlit Dashboard:
-Create a Streamlit application with each query represented in different sections or tabs.
-Use tables, charts, or other visual elements to display query results interactively.
-Validation:
-Test each query on Streamlit to ensure data is displayed correctly and visualizations are clear and informative.
+1. **Install Dependencies**:
+   - Make sure required dependencies are installed by running:
+     ```bash
+     pip install pandas sqlalchemy pymongo streamlit os numpy
+     ```
 
-finally the output is displayed in the seperate localhost with the help of streamlit as below attached image.
-/////
+2. **Install Database Tools**:
+   - **MySQL Workbench** and **MongoDB** are required for data storage and retrieval.
 
-# Clone the Project Repository:
-- initally, Copy the project url-By clicking the code button in the repo and copy(http method).
-- open **cmd by pressing the win+r and type cmd**.
- This will open the command prompt shell.
-```bash
-git clone ////
-```
-- This will create a local copy of the repository in a folder named after the repository. 
+3. **Execute the Pipeline**:
+   - Follow the project workflow to run the pipeline from data extraction through visualization.
 
-### Navigate into the project folder:
-```bash
-cd guvi_DE_MP1
-```
-### To open the vs code editor.
+---
 
-```bash
-.code 
-```
-- run the code after installing the necessary dependencies **(pip install  pandas, sqlalchemy, pymongo, streamlit,os and numpy)**.
-- Make sure that you have installed the mysql workbench and Mangodb to store and retrieve data while running the pipeline.
-
+By following this structured README, you can set up, run, and manage the census data pipeline effectively.
 
